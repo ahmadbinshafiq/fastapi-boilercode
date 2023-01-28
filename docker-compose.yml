@@ -1,0 +1,41 @@
+version: "3.6"
+
+services:
+
+  pg-database:
+    image: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # ports:
+    #   - "5432:5432"
+
+  fastapi-app:
+    build: .
+    command: uvicorn app:app --reload --host 0.0.0.0 --port 8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=pg-database
+      - POSTGRES_PORT=5432
+    depends_on:
+      - pg-database
+
+volumes:
+  db:
+
+
