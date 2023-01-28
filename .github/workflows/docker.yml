@@ -1,4 +1,4 @@
-name: Docker Compose Actions Workflow
+name: Deploy Docker Compose - Actions Workflow
 
 on:
   push:
@@ -6,11 +6,25 @@ on:
 
 jobs:
 
-  build:
+  build-and-deploy:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the stack
-      run: docker-compose up -d
+    
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /home/ubuntu/fastapi-boilercode
+          git pull
+          docker-compose up -d
+
+    # - name: Run the stack
+    #   run: docker-compose up -d
+
