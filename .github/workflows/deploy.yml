@@ -1,4 +1,4 @@
-name: Deploy Docker Compose - Actions Workflow
+name: Continous Deployment Actions Workflow
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 jobs:
 
-  build-and-deploy:
+  deploy:
 
     runs-on: ubuntu-latest
 
@@ -16,10 +16,10 @@ jobs:
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.KEY }}
-        port: ${{ secrets.PORT }}
+        host: ${{ secrets.HOST }}  # Public IPv4 DNS
+        username: ${{ secrets.USERNAME }}  # ubuntu
+        key: ${{ secrets.KEY }}  # SSH private key (sudo cat mykey.pem)
+        port: ${{ secrets.PORT }} # 22 default
         script: |
           echo "Deploying to EC2"
           cd /home/ubuntu/fastapi-boilercode
