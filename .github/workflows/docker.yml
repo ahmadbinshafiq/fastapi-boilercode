@@ -21,9 +21,9 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
+          echo "Deploying to EC2"
           cd /home/ubuntu/fastapi-boilercode
           git pull
-          docker-compose up -d
 
     # - name: Run the stack
     #   run: docker-compose up -d
